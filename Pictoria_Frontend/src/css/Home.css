@@ -1,0 +1,138 @@
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background-color: #dddddd;
+    color: #252525;
+  }
+  
+  .homepage-container {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .homepage-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .homepage-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #111;
+    margin: 0.5rem 0;
+  }
+  
+  .homepage-description {
+    font-size: 1.1rem;
+    color: #555;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    border-color: #0073e6;
+    box-shadow: 0 0 5px rgba(0, 115, 230, 0.5);
+  }
+  
+  .search-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    color: white;
+    background-color: #0073e6;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .search-button:hover:not(:disabled) {
+    background-color: #005bb5;
+  }
+  
+  /* Image grid styles */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .image-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .image-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .image-details {
+    padding: 0.8rem;
+  }
+  
+  .image-description {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 0.5rem;
+  }
+  
+  .image-author {
+    font-size: 0.8rem;
+    color: #0073e6;
+    text-decoration: none;
+  }
+  
+  .image-author:hover {
+    text-decoration: underline;
+  }
+  
+  /* No results */
+  .no-results-container {
+    margin-top: 2rem;
+    text-align: center;
+    color: #777;
+  }
+  
+  .no-results-text {
+    font-size: 1rem;
+  }
+  
