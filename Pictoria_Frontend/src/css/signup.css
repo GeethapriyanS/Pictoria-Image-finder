@@ -1,0 +1,89 @@
+/* Background styling */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #002244, #003366);
+  }
+  
+  /* Signup Box */
+  .signup-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Header */
+  .signup-box h2 {
+    color: #222;
+    margin-bottom: 15px;
+    font-size: 22px;
+  }
+  
+  /* Form Labels */
+  .signup-box label {
+    display: block;
+    text-align: left;
+    font-size: 14px;
+    margin: 8px 0 5px;
+    font-weight: 500;
+    color: #333;
+  }
+  .signup-box h2{
+     font-weight: bold;
+     font-size: 30px;
+  }
+
+  /* Input Fields */
+  .signup-box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  /* Input field for name split */
+  .name-fields {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .input-group {
+    width: 45%;
+    
+  }
+  
+  /* Submit Button */
+  .signup-box button {
+    width: 100%;
+    padding: 10px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 15px;
+  }
+  
+  .signup-box button:hover {
+    background: #222;
+  }
+  
+  /* Login Link */
+  .signup-box p {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  
+  .signup-box a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
