@@ -5,6 +5,7 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("./models/user");
+const axios = require("axios");
 
 const app = express();
 app.use(cors());
@@ -103,6 +104,45 @@ app.get("/user", verifyToken, async (req, res) => {
 app.get("/json", verifyToken, (req, res) => {
   res.json({ message: "Middleware verification successful", user: req.user });
 });
+
+
+const TRENDING_SEARCHES = ["spring", "peacock feather", "animals", "books", "sick"];
+
+// app.get("/search", async (req, res) => {
+//   const { query } = req.query;
+//   try {
+//     const response = await axios.get("https://api.unsplash.com/search/photos", {
+//       params: { query, per_page: 50 },
+//       headers: {
+//         Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`,
+//       },
+//     });
+//     res.json(response.data);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to fetch images" });
+//   }
+// });
+
+app.get("/search", async (req, res) => {
+  const { query } = req.query;
+  
+  if (!query) return res.status(400).json({ error: "Query is required" });
+
+  try {
+    const response = await axios.get(`https://api.unsplash.com/search/photos`, {
+      params: { query, per_page: 50 },
+      headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` },
+    });
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching data" });
+  }
+});
+
+app.get("/trending", (req, res) => {
+  res.json(TRENDING_SEARCHES);
+});
+
 
 
 app.listen(process.env.PORT, () => {
