@@ -1,0 +1,86 @@
+.profile-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .profile-header {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+  }
+  
+  .profile-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .profile-header p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .logout-btn {
+    padding: 10px 20px;
+    background-color: #ff4b5c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .logout-btn:hover {
+    background-color: #d43b4a;
+  }
+  
+  h3 {
+    text-align: left;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .user-image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .user-image-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    padding: 10px;
+    transition: transform 0.3s;
+  }
+  
+  .user-image-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .user-image-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .user-image-card p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+  }
+  
