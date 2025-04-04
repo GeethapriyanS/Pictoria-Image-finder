@@ -5,6 +5,8 @@ import "../css/Home3.css";
 import logo from "../images/logo.png";
 import searchIcon from "../images/search.png";
 import UploadModal from "./uploadmodel.jsx";
+import like from "../images/like.png"
+import download from "../images/download.png"
 
 const Home3 = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,13 +150,23 @@ const fetchImages = async (query, newPage = 1) => {
       {loading ? <p>Loading...</p> : (
         <>
           <div className="image-grid">
-             {images.map((img) => (
-            <div key={img.id} className="image-card">
-           <img src={img.imageUrl} alt={img.title} />
-          {img.isUserUpload && <span className="badge">{img.title}</span>} 
-          </div>
-           ))}
-          </div>
+  {images.map((img) => (
+    <div key={img.id} className="image-card">
+      <img src={img.imageUrl} alt={img.title} />
+      
+      <div className="image-overlay">
+        <button className="like-btn"><img src={like} alt="like" /></button>
+
+        <a href={img.imageUrl} download className="download-btn"><img src={download} alt="download" /></a>
+
+        {img.isUserUpload && (
+          <Link to={`/profile/${img.id}`} className="profile-link">👤</Link>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
 
 
           <div className="pagination">

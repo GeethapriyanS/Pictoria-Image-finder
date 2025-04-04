@@ -27,7 +27,7 @@
   }
   
   .logo img {
-    height: 50px;
+    height: 60px;
     margin-right: 10px;
   }
   
@@ -257,5 +257,70 @@
   .tag:hover {
     background-color: #333;
     color: #fff;
+  }
+  
+  .image-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  .image-card img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .image-card:hover img {
+    transform: scale(1.05);
+  }
+  
+  /* Overlay Container (Now positioned at the bottom) */
+  .image-overlay {
+    position: absolute;
+    bottom: 10px; /* Stick to bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .image-card:hover .image-overlay {
+    opacity: 1;
+  }
+  
+  /* Fix Icon Size */
+  .image-overlay button,
+  .image-overlay a {
+    background: white;
+    border: none;
+    padding: 6px;
+    font-size: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px; /* Set a fixed size */
+    height: 36px;
+  }
+  
+  .image-overlay button img,
+  .image-overlay a img {
+    width: 20px; /* Adjust icon size */
+    height: 20px;
+  }
+  
+  .image-overlay button:hover,
+  .image-overlay a:hover {
+    background: #ff4757;
+    color: white;
   }
   
