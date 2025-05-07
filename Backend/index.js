@@ -58,10 +58,7 @@ app.post("/upload", async (req, res) => {
 
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => console.log("MongoDB Connected Successfully"))
+mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.log("MongoDB Connection Failed:", err));
 
 // User Signup

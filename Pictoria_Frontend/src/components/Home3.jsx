@@ -62,7 +62,7 @@ const fetchImages = async (query, newPage = 1) => {
   
         unsplashImages = unsplashResponse.data.results.map((img) => ({
           id: img.id,
-          imageUrl: img.urls.small, // Unsplash image URL
+          imageUrl: img.urls.small,
           title: img.alt_description || "Untitled",
           isUserUpload: false,
         }));
@@ -144,7 +144,7 @@ const fetchImages = async (query, newPage = 1) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button onClick={handleSearch}><img src={searchIcon} alt="search" /></button>
+        <button type="submit" onClick={handleSearch}><img src={searchIcon} alt="search" /></button>
       </div>
 
       {loading ? <p>Loading...</p> : (
