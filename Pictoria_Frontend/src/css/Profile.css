@@ -1,124 +1,121 @@
+/* Profile Container */
 .profile-container {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.profile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.profile-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-btn, .logout-btn, .back-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.edit-btn {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.logout-btn {
-  background-color: #F44336;
-  color: white;
-}
-
-.back-btn {
-  background-color: #555;
-  color: white;
-  margin-bottom: 1rem;
-}
-
-.user-image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.user-image-card {
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #ffffff;
+  min-height: 100vh;
   text-align: center;
 }
 
-.user-image-card img {
+/* Profile Header */
+.profile-header {
+  margin-bottom: 30px;
+}
+
+.profile-picture {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #000000;
+}
+
+.profile-picture img {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
 }
 
-.image-footer {
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.profile-header h1 {
+  font-size: 26px;
+  margin: 10px 0;
+  color: #333;
+  font-weight: bold;
 }
 
-.delete-btn {
-  background: none;
+.profile-header p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.edit-profile-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
   border: none;
-  font-size: 18px;
+  border-radius: 5px;
   cursor: pointer;
-  color: red;
+  font-size: 14px;
 }
 
-/* Modal styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
+.edit-profile-btn:hover {
+  background-color: #45a049;
+}
+
+/* Profile Tabs */
+.profile-tabs {
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
 }
 
-.modal-content {
+.tab-btn {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+  border-bottom: 2px solid transparent;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+.tab-btn.active {
+  font-weight: bold;
+  color: #000000;
+  border-bottom: 2px solid #000000;
+}
+
+.tab-btn:hover {
+  color: #000000;
+}
+
+/* Profile Content */
+.profile-content {
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+/* Image Grid */
+/* Collection Grid */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.collection-card {
   background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.modal-content input {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 1rem;
+.collection-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.save-btn {
-  background-color: #4CAF50;
-  padding: 10px;
-  color: white;
-  border: none;
-  width: 45%;
-  margin-right: 5%;
-  border-radius: 8px;
-}
-
-.cancel-btn {
-  background-color: #F44336;
-  padding: 10px;
-  color: white;
-  border: none;
-  width: 45%;
-  border-radius: 8px;
+.collection-card h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
 }

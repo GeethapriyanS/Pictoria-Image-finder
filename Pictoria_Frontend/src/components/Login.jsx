@@ -6,6 +6,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // New state for popup
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,10 +23,13 @@ const Login = () => {
       const data = await response.json();
 
       if (data.isValid) {
-        alert("Login Successful");
+        setShowPopup(true); // Show popup on successful login
         localStorage.setItem("token", data.token);
         localStorage.setItem("userId", data.userId);
-        setTimeout(() => navigate("/home3"), 1500);
+        setTimeout(() => {
+          setShowPopup(false);
+          navigate("/home3");
+        }, 2000); // Hide popup and navigate after 1.5 seconds
       } else {
         alert("Invalid Credentials");
       }
@@ -49,6 +53,16 @@ const Login = () => {
         </form>
         <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
       </div>
+
+      {/* Popup for login success */}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h3>Login Successful!</h3>
+            <p>Welcome back to Pictoria.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

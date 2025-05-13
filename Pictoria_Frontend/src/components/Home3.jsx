@@ -5,8 +5,9 @@ import "../css/Home3.css";
 import logo from "../images/logo.png";
 import searchIcon from "../images/search.png";
 import UploadModal from "./uploadmodel.jsx";
-import like from "../images/like.png"
-import download from "../images/download.png"
+import like from "../images/like.png";
+import download from "../images/download.png";
+import Navbar from "./Navbar.jsx";
 
 const Home3 = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,37 +30,35 @@ const Home3 = () => {
     if (user) setIsLoggedIn(true);
   }, []);
 
-  const fetchUserImages = async () => {
-  try {
-    const response = await axios.get("http://localhost:5000/user-images");
-    return response.data.images || [];
-  } catch (error) {
-    console.error("Error fetching user images:", error);
-    return [];
-  }
-};
+  useEffect(() => {
+    // Fetch all images by default when the page loads
+    const fetchAllImages = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:5000/all-images"); // API endpoint for all images
+        setImages(response.data.images || []);
+      } catch (error) {
+        console.error("Error fetching all images:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const fetchImages = async (query, newPage = 1) => {
+    fetchAllImages();
+  }, []);
+
+  const fetchImages = async (query, newPage = 1) => {
     try {
       setLoading(true);
       setLastQuery(query);
-  
-      // Fetch user-uploaded images
-      const userResponse = await axios.get("http://localhost:5000/user-images");
-      const userImages = userResponse.data.images.map((img) => ({
-        id: img._id, // MongoDB ID
-        imageUrl: img.imageUrl, // Custom user-uploaded image URL
-        title: img.title,
-        isUserUpload: true, // Flag for distinguishing
-      }));
-  
+
       // Fetch Unsplash images only if there is a query
       let unsplashImages = [];
       if (query) {
         const unsplashResponse = await axios.get("http://localhost:5000/search", {
           params: { query, per_page: 28, page: newPage },
         });
-  
+
         unsplashImages = unsplashResponse.data.results.map((img) => ({
           id: img.id,
           imageUrl: img.urls.small,
@@ -67,7 +66,7 @@ const fetchImages = async (query, newPage = 1) => {
           isUserUpload: false,
         }));
       }
-  
+
       // Merge both sets of images
       setImages(unsplashImages);
       setPage(newPage);
@@ -78,12 +77,26 @@ const fetchImages = async (query, newPage = 1) => {
       setLoading(false);
     }
   };
-  
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchTerm) {
-      fetchImages(searchTerm, 1);
-      setSearchTerm("");
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:5000/search", {
+          params: { query: searchTerm },
+        });
+        setImages(response.data.results || []);
+      } catch (error) {
+        console.error("Error searching images:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -104,81 +117,64 @@ const fetchImages = async (query, newPage = 1) => {
   };
 
   return (
-    <div className="container">
-      <nav className="navbar">
-        <div className="logo">
-          <img src={logo} alt="Pictoria Logo" />
-          <h1>Pictoria</h1>
+    <>
+      <Navbar setShowUpload={setShowUpload} />
+      <div className="container">
+        <header className="homepage-header">
+          <h1 className="homepage-title">Discover the best content on Pictoria</h1>
+          <p className="homepage-description">Choose your interests</p>
+        </header>
+
+        <div className="trending-tags">
+          {trendingSearches.map((item, index) => (
+            <span key={index} className="tag" onClick={() => fetchImages(item, 1)}>{item}</span>
+          ))}
         </div>
-        <div className="nav-links">
-          {isLoggedIn ? (
-            <>
-              <button className="upload" onClick={() => setShowUpload(true)}>Upload</button>
-              <button className="logout" onClick={handleLogout}>Logout</button>
-              <Link to="/profile"><button className="profile">Profile</button></Link>
-            </>
-          ) : (
-            <>
-              <Link to="/login"><button className="login">Login</button></Link>
-              <Link to="/signup"><button className="signup">Sign Up</button></Link>
-            </>
-          )}
+
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown} // Trigger search on "Enter" key press
+          />
+          <button type="button" onClick={handleSearch}>
+            <img src={searchIcon} alt="Search" />
+          </button>
         </div>
-      </nav>
 
-      <header className="homepage-header">
-        <h1 className="homepage-title">Discover the best content on Pictoria</h1>
-        <p className="homepage-description">Choose your interests</p>
-      </header>
+        {loading ? <p>Loading...</p> : (
+          <>
+            <div className="image-grid">
+              {images.map((img) => (
+                <div key={img.id} className="image-card">
+                  <img src={img.imageUrl} alt={img.title} />
 
-      <div className="trending-tags">
-        {trendingSearches.map((item, index) => (
-          <span key={index} className="tag" onClick={() => fetchImages(item, 1)}>{item}</span>
-        ))}
-      </div>
+                  <div className="image-overlay">
+                    <button className="like-btn"><img src={like} alt="like" /></button>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search images..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button type="submit" onClick={handleSearch}><img src={searchIcon} alt="search" /></button>
-      </div>
+                    <a href={img.imageUrl} download className="download-btn"><img src={download} alt="download" /></a>
 
-      {loading ? <p>Loading...</p> : (
-        <>
-          <div className="image-grid">
-  {images.map((img) => (
-    <div key={img.id} className="image-card">
-      <img src={img.imageUrl} alt={img.title} />
-      
-      <div className="image-overlay">
-        <button className="like-btn"><img src={like} alt="like" /></button>
+                    {img.isUserUpload && (
+                      <Link to={`/profile/${img.id}`} className="profile-link">👤</Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
 
-        <a href={img.imageUrl} download className="download-btn"><img src={download} alt="download" /></a>
-
-        {img.isUserUpload && (
-          <Link to={`/profile/${img.id}`} className="profile-link">👤</Link>
+            <div className="pagination">
+              <button onClick={handlePrevPage} disabled={page === 1}>Previous</button>
+              <span> Page {page} </span>
+              <button onClick={handleNextPage} disabled={!hasMore}>Next</button>
+            </div>
+          </>
         )}
+
+        {showUpload && <UploadModal close={() => setShowUpload(false)} />}
       </div>
-    </div>
-  ))}
-</div>
-
-
-
-          <div className="pagination">
-            <button onClick={handlePrevPage} disabled={page === 1}>Previous</button>
-            <span> Page {page} </span>
-            <button onClick={handleNextPage} disabled={!hasMore}>Next</button>
-          </div>
-        </>
-      )}
-
-      {showUpload && <UploadModal close={() => setShowUpload(false)} />}
-    </div>
+    </>
   );
 };
 

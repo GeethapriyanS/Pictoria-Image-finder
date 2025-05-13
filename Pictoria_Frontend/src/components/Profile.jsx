@@ -1,117 +1,111 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../css/Profile.css";
-import { Link, useNavigate } from "react-router-dom";
+import defaultProfile from "../images/default profile.jpg"; // Import the default profile image
+import Navbar from "./Navbar";
 
 const Profile = () => {
-  const [userImages, setUserImages] = useState([]);
+  const [activeTab, setActiveTab] = useState("Photos");
   const [userInfo, setUserInfo] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedInfo, setEditedInfo] = useState({ username: "", email: "" });
-  
-  const navigate = useNavigate();
+  const [userImages, setUserImages] = useState([]);
+  const [likedImages, setLikedImages] = useState([]);
+  const [collections, setCollections] = useState([]);
+
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (!userId) return;
 
-    const fetchUserImages = async () => {
+    const fetchProfileData = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/user/${userId}`);
+        console.log("API Response:", res.data); // Log the API response for debugging
         setUserInfo(res.data.user || {});
         setUserImages(res.data.images || []);
+        setLikedImages(res.data.likedImages || []);
+        setCollections(res.data.collections || []);
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
     };
 
-    fetchUserImages();
+    fetchProfileData();
   }, [userId]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    navigate("/login");
-  };
-
-  const handleEditProfile = () => {
-    setEditedInfo({ username: userInfo.username, email: userInfo.email });
-    setIsEditing(true);
-  };
-
-  const handleSaveProfile = async () => {
-    try {
-      await axios.put(`http://localhost:5000/user/update/${userId}`, editedInfo);
-      setUserInfo(editedInfo);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
-  };
-
-  const handleDeleteImage = async (imageId) => {
-    try {
-      await axios.delete(`http://localhost:5000/user/image/${imageId}`);
-      setUserImages((prev) => prev.filter((img) => img._id !== imageId));
-    } catch (error) {
-      console.error("Error deleting image:", error);
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "Photos":
+        return userImages.length > 0 ? (
+          <div className="image-grid">
+            {userImages.map((img) => (
+              <div key={img._id} className="image-card">
+                <img src={img.imageUrl} alt={img.title || "Uploaded Image"} /> {/* Ensure imageUrl is valid */}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No photos uploaded yet.</p>
+        );
+      case "Likes":
+        return likedImages.length > 0 ? (
+          <div className="image-grid">
+            {likedImages.map((img) => (
+              <div key={img._id} className="image-card">
+                <img src={img.imageUrl} alt={img.title || "Liked Image"} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No liked images yet.</p>
+        );
+      case "Collections":
+        return collections.length > 0 ? (
+          <div className="collection-grid">
+            {collections.map((collection) => (
+              <div key={collection._id} className="collection-card">
+                <h4>{collection.name}</h4>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No collections yet.</p>
+        );
+      case "Stats":
+        return <p>Stats feature is coming soon!</p>;
+      default:
+        return null;
     }
   };
 
   return (
+    <>
+    <Navbar/>
     <div className="profile-container">
       <div className="profile-header">
-      <button className="back-btn" onClick={() => navigate("/home3")}>Back</button>
-        <h2>Welcome, {userInfo.username || "User"}!</h2>
-        <p>Email: {userInfo.email}</p>
-        <div className="profile-actions">
-          <button onClick={handleEditProfile} className="edit-btn">Edit Profile</button>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+        <div className="profile-picture">
+          <img
+            src={userInfo.profilePicture || defaultProfile} // Use default profile picture if none is set
+            alt="Profile"
+          />
         </div>
+        <h1>{userInfo.username || "User"}</h1>
+        <p>{userInfo.bio || "Download free, beautiful high-quality photos curated by the user."}</p>
+        <button className="edit-profile-btn">Edit Profile</button>
       </div>
-
-      
-
-      <h3>Your Uploaded Images</h3>
-      <div className="user-image-grid">
-        {userImages.length > 0 ? (
-          userImages.map((img) => (
-            <div key={img._id} className="user-image-card">
-              <img src={img.imageUrl} alt={img.title} />
-              <div className="image-footer">
-                <p>{img.title}</p>
-                <button onClick={() => handleDeleteImage(img._id)} className="delete-btn">Delete</button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No uploads yet.</p>
-        )}
+      <div className="profile-tabs">
+        {["Photos", "Illustrations", "Likes", "Collections", "Stats"].map((tab) => (
+          <button
+            key={tab}
+            className={`tab-btn ${activeTab === tab ? "active" : ""}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
-
-      {/* Modal for Editing Profile */}
-      {isEditing && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Edit Profile</h3>
-            <input
-              type="text"
-              value={editedInfo.username}
-              onChange={(e) => setEditedInfo({ ...editedInfo, username: e.target.value })}
-              placeholder="Username"
-            />
-            <input
-              type="email"
-              value={editedInfo.email}
-              onChange={(e) => setEditedInfo({ ...editedInfo, email: e.target.value })}
-              placeholder="Email"
-            />
-            <button onClick={handleSaveProfile} className="save-btn">Save</button>
-            <button onClick={() => setIsEditing(false)} className="cancel-btn">Cancel</button>
-          </div>
-        </div>
-      )}
+      <div className="profile-content">{renderTabContent()}</div>
     </div>
+    </>
   );
 };
 

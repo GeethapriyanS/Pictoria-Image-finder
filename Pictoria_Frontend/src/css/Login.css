@@ -72,4 +72,38 @@
     text-decoration: none;
     font-weight: bold;
   }
+
+  /* Popup Styling */
+  .popup {
+    position: fixed;
+    top: 20px; /* Position the popup near the top */
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 90%;
+    background: rgba(255, 255, 255, 0.8); /* Slightly darker background for better visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
   
+  .popup-content {
+    color:#b71c1c; /* White text for contrast */
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .popup-content h3 {
+    margin: 0 0 5px;
+    font-size: 15px;
+    color: #4caf50; /* Green for success */
+  }
+  
+  .popup-content p {
+    margin: 0;
+    font-size: 14px;
+  }

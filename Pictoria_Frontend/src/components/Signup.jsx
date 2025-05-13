@@ -8,26 +8,38 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigator=useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // New state for popup
+  const navigator = useNavigate();
+
   const handleSignup = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, lastName, email, username, password }),
-    });
-  
-    const data = await response.json();
-    if(data.status){
-    alert(data.message);
-    setTimeout(() => {
-        navigator("/login");
-    }, 2000);
-    }else{
-       alert(data.message);
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.status) {
+        setShowPopup(true); // Show popup on successful signup
+        setTimeout(() => {
+          setShowPopup(false);
+          navigator("/login");
+        }, 2000); // Hide popup and navigate after 1.5 seconds
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
     <div className="signup-container">
@@ -80,10 +92,22 @@ const Signup = () => {
             required
           />
 
-          <button type="submit">Join</button>
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing up..." : "Join"}
+          </button>
         </form>
         <p>Already have an account? <Link to="/login">Login</Link></p>
       </div>
+
+      {/* Popup for signup success */}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h3>Signup Successful!</h3>
+            <p>Welcome to Pictoria. Redirecting to login...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
