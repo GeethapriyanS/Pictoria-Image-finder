@@ -10,6 +10,37 @@ const Profile = () => {
   const [userImages, setUserImages] = useState([]);
   const [likedImages, setLikedImages] = useState([]);
   const [collections, setCollections] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [editData, setEditData] = useState({
+    username: "",
+    bio: "",
+    profilePicture: "",
+  });
+
+  const handleEditClick = () => {
+    setEditData({
+      username: userInfo.username || "",
+      bio: userInfo.bio || "",
+      profilePicture: userInfo.profilePicture || "",
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/user/${userId}`,
+        editData
+      );
+      setUserInfo(res.data);
+      setShowEditModal(false);
+    } catch (err) {
+      console.error("Profile update failed", err);
+      alert("Failed to update profile");
+    }
+  };
 
   const userId = localStorage.getItem("userId");
 
@@ -151,7 +182,9 @@ const Profile = () => {
             {userInfo.bio ||
               "Download free, beautiful high-quality photos curated by the user."}
           </p>
-          <button className="edit-profile-btn">Edit Profile</button>
+          <button className="edit-profile-btn" onClick={handleEditClick}>
+            Edit Profile
+          </button>
         </div>
         <div className="profile-tabs">
           {["Photos", "Illustrations", "Likes", "Collections", "Stats"].map(
@@ -168,6 +201,50 @@ const Profile = () => {
         </div>
         <div className="profile-content">{renderTabContent()}</div>
       </div>
+      {showEditModal && (
+        <div className="modal-overlay">
+          <div className="edit-profile-modal">
+            <h2>Edit Profile</h2>
+            <form onSubmit={handleUpdateProfile}>
+              <label>
+                Username:
+                <input
+                  type="text"
+                  value={editData.username}
+                  onChange={(e) =>
+                    setEditData({ ...editData, username: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Bio:
+                <textarea
+                  value={editData.bio}
+                  onChange={(e) =>
+                    setEditData({ ...editData, bio: e.target.value })
+                  }
+                />
+              </label>
+              <label>
+                Profile Picture URL:
+                <input
+                  type="text"
+                  value={editData.profilePicture}
+                  onChange={(e) =>
+                    setEditData({ ...editData, profilePicture: e.target.value })
+                  }
+                />
+              </label>
+              <div className="modal-actions">
+                <button type="submit">Save</button>
+                <button type="button" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 };

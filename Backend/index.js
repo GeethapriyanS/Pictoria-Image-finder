@@ -322,6 +322,31 @@ app.delete('/user/:userId/collection/:collectionId', async (req, res) => {
   }
 });
 
+// PATCH /user/:userId
+// Update User Profile
+app.patch("/user/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, bio, profilePicture } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { username, bio, profilePicture },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
+
+
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
