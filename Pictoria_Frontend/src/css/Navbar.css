@@ -75,3 +75,9 @@
   background-color: red;
   color: white;
 }
+
+.spacer {
+  margin-left: 800px;
+  display: flex;
+  gap: 20px;
+}

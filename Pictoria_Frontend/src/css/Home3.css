@@ -1,342 +1,406 @@
 /* General Styling */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-  }
-  
-  .container {
-    width: 100%;
-    text-align: center;
-  }
-  
-  /* Navbar */
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 60px;
-    background: white;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo img {
-    height: 60px;
-    margin-right: 10px;
-  }
-  
-  .logo h1 {
-    font-size: 26px;
-    font-family: cursive;
-    color: #b71c1c;
-    font-weight: bold;
-  }
-  
-  .nav-links {
-    display: flex;
-    gap: 15px;
-  }
-  
-  .nav-links button {
-    background: #d32f2f;
-    font-family: inherit;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-  }
-  
-  .nav-links button:hover {
-    background: #a31212;
-  }
-  
-  /* Header Section */
-  .homepage-header {
-    margin-top: 40px;
-  }
-  
-  .homepage-title {
-    font-size: 30px;
-    font-weight: 700;
-    font-family: "poppins", sans-serif;
-    color: #333;
-  }
-  
-  .homepage-description {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 15px;
-  }
-  
-  /* Search Bar */
-  .search-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px auto;
-    width: 80%;
-    max-width: 600px;
-    background: #f5f5f5;
-    border-radius: 25px;
-    padding: 10px 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .search-bar input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 16px;
-    padding: 5px 10px;
-  }
-  
-  .search-bar input::placeholder {
-    color: #aaa;
-  }
-  
-  .search-bar button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-  }
-  
-  .search-bar button img {
-    width: 20px;
-    height: 20px;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-  }
-  
-  .search-bar button:hover img {
-    opacity: 1;
-  }
-  
-  /* Image Grid */
-  .image-grid {
-    display: grid;
-    margin-left: 6%;
-    margin-right: 6%;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    padding: 40px;
-    justify-items: center;
-  }
-  
-  /* Ensure Images are Uniform */
-  .image-grid img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 10px;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .image-grid img:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Pagination Buttons */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-    gap: 15px;
-  }
-  
-  .pagination button {
-    background: #000000;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .pagination button:hover {
-    background: #000000;
-  }
-  
-  .pagination button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .pagination span {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  /* Upload Modal */
-  .upload-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-  }
-  
-  .upload-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    width: 400px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    z-index: 11;
-  }
-  
-  .upload-modal h2 {
-    margin-bottom: 15px;
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .upload-modal input {
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .upload-modal button {
-    padding: 10px;
-    border: none;
-    background-color: #000000;
-    color: white;
-    cursor: pointer;
-    margin: 5px;
-    border-radius: 5px;
-    transition: background 0.3s;
-  }
-  
-  .upload-modal .upload-btn {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  .upload-modal .cancel-btn {
-    background-color: #f44336;
-    color: white;
-  }
-  
-  .upload-modal .upload-btn:hover {
-    background-color: #388e3c;
-  }
-  
-  .upload-modal .cancel-btn:hover {
-    background-color: #d32f2f;
-  }
-  
-  .trending-tags {
-    margin: 20px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  
-  .tag {
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  }
-  
-  .tag:hover {
-    background-color: #333;
-    color: #fff;
-  }
-  
-  .image-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-  }
-  
-  .image-card img {
-    width: 100%;
-    display: block;
-    border-radius: 10px;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .image-card:hover img {
-    transform: scale(1.05);
-  }
-  
-  /* Overlay Container (Now positioned at the bottom) */
-  .image-overlay {
-    position: absolute;
-    bottom: 10px; /* Stick to bottom */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: space-around;
-    padding: 8px;
-    border-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .image-card:hover .image-overlay {
-    opacity: 1;
-  }
-  
-  /* Fix Icon Size */
-  .image-overlay button,
-  .image-overlay a {
-    background: white;
-    border: none;
-    padding: 6px;
-    font-size: 14px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px; /* Set a fixed size */
-    height: 36px;
-  }
-  
-  .image-overlay button img,
-  .image-overlay a img {
-    width: 20px; /* Adjust icon size */
-    height: 20px;
-  }
-  
-  .image-overlay button:hover,
-  .image-overlay a:hover {
-    background: #ff4757;
-    color: white;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  width: 100%;
+  text-align: center;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 60px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 60px;
+  margin-right: 10px;
+}
+
+.logo h1 {
+  font-size: 26px;
+  font-family: cursive;
+  color: #b71c1c;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links button {
+  background: #d32f2f;
+  font-family: inherit;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.nav-links button:hover {
+  background: #a31212;
+}
+
+/* Header Section */
+.homepage-header {
+  margin-top: 40px;
+}
+
+.homepage-title {
+  font-size: 30px;
+  font-weight: 700;
+  font-family: "poppins", sans-serif;
+  color: #333;
+}
+
+.homepage-description {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  width: 80%;
+  max-width: 600px;
+  background: #f5f5f5;
+  border-radius: 25px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.search-bar input::placeholder {
+  color: #aaa;
+}
+
+.search-bar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.search-bar button img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.search-bar button:hover img {
+  opacity: 1;
+}
+
+/* Image Grid */
+.image-grid {
+  display: grid;
+  margin-left: 6%;
+  margin-right: 6%;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  padding: 40px;
+  justify-items: center;
+}
+
+/* Ensure Images are Uniform */
+.image-grid img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Pagination Buttons */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  gap: 15px;
+}
+
+.pagination button {
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.pagination button:hover {
+  background: #000000;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Upload Modal */
+.upload-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.upload-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  z-index: 11;
+}
+
+.upload-modal h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.upload-modal input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+}
+
+.upload-modal button {
+  padding: 10px;
+  border: none;
+  background-color: #000000;
+  color: white;
+  cursor: pointer;
+  margin: 5px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.upload-modal .upload-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.upload-modal .cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.upload-modal .upload-btn:hover {
+  background-color: #388e3c;
+}
+
+.upload-modal .cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.trending-tags {
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.tag:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.image-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.image-card img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Overlay Container (Now positioned at the bottom) */
+.image-overlay {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.image-card:hover .image-overlay {
+  opacity: 1;
+}
+
+/* Fix Icon Size */
+.image-overlay button,
+.image-overlay a {
+  background: white;
+  border: none;
+  padding: 6px;
+  font-size: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.image-overlay button img,
+.image-overlay a img {
+  width: 20px;
+  height: 20px;
+}
+
+.image-overlay button:hover,
+.image-overlay a:hover {
+  background: #383838;
+  color: white;
+}
+
+.collection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.collection-modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.collection-modal-content h2 {
+  margin: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.collection-modal-content input,
+.collection-modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+}
+
+.collection-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.collection-modal-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.collection-modal-buttons button.save-btn {
+  background-color: #000000;
+  color: white;
+}
+
+.collection-modal-buttons button.cancel-btn {
+  background-color: #e0e0e0;
+  color: #000000;
+}

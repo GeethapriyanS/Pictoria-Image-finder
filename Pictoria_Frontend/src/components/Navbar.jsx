@@ -57,6 +57,7 @@ const Navbar = ({ setShowUpload }) => {
             </>
           ) : (
             <>
+              <div className="spacer">
               <Link to="/login">
                 <button className="nav-btn">
                   <FaUser className="nav-icon" />
@@ -66,9 +67,10 @@ const Navbar = ({ setShowUpload }) => {
               <Link to="/signup">
                 <button className="nav-btn">
                   <FaUser className="nav-icon" />
-                  Sign Up
+                  SignUp
                 </button>
               </Link>
+              </div>
             </>
           )}
         </div>

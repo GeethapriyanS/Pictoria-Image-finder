@@ -1,6 +1,4 @@
 const dotenv = require("dotenv");
-dotenv.config(); // Load environment variables early
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -16,10 +14,10 @@ const cloudinary = require('./config/cloudinary');
 const app = express();
 app.use(cors());
 app.use(express.json());
+dotenv.config(); 
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Configure Multer Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -154,7 +152,7 @@ app.get("/search", async (req, res) => {
   try {
     const response = await axios.get(`https://api.unsplash.com/search/photos`, {
       params: { query, per_page, page },
-      headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` },
+      headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`},
     });
     
     res.json(response.data);
@@ -185,6 +183,144 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+app.post("/user/:userId/like", async (req, res) => {
+  const { userId } = req.params;
+  const { imageUrl, title } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Find or create the Image
+    let image = await Image.findOne({ imageUrl });
+    if (!image) {
+      image = new Image({ imageUrl, title, uploadedBy: userId });
+      await image.save();
+    }
+
+    // Check if already liked
+    const alreadyLiked = user.likedImages.includes(image._id);
+    if (alreadyLiked) {
+      return res.status(400).json({ message: "Image already liked" });
+    }
+
+    // Add to likedImages
+    user.likedImages.push(image._id);
+    await user.save();
+
+    res.status(200).json({ message: "Image liked successfully" });
+  } catch (error) {
+    console.error("Error liking image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// POST /user/:userId/unlike
+app.post("/user/:userId/unlike", async (req, res) => {
+  const { userId } = req.params;
+  const { imageId } = req.body; // <-- imageId not imageUrl
+
+  if (!mongoose.Types.ObjectId.isValid(imageId)) {
+    return res.status(400).json({ error: "Invalid image ID" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // 1. Remove from likedImages (ObjectId comparison)
+    user.likedImages = user.likedImages.filter(
+      (id) => id.toString() !== imageId
+    );
+
+    // 2. Remove from all collections (collections.images also have ObjectIds)
+    user.collections = user.collections.map((collection) => {
+      return {
+        ...collection,
+        images: collection.images.filter(
+          (id) => id.toString() !== imageId
+        ),
+      };
+    });
+
+    await user.save();
+
+    res.status(200).json({ message: "Image unliked and removed from collections" });
+  } catch (err) {
+    console.error("Error unliking image:", err);
+    res.status(500).json({ error: "Failed to unlike image" });
+  }
+});
+
+app.post("/user/:userId/collections", async (req, res) => {
+  const { userId } = req.params;
+  const { name, description, imageUrl, title } = req.body;
+
+  try {
+    // 1. Check if image already exists, else create it
+    let image = await Image.findOne({ imageUrl });
+
+    if (!image) {
+  image = new Image({ imageUrl, title, uploadedBy: userId });
+  await image.save();
+}
+
+
+    // 2. Find the user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // 3. Check if collection with the same name already exists
+   let collection = user.collections.find(
+  (col) => col.name.toLowerCase() === name.toLowerCase()
+);
+
+    if (collection) {
+      // Avoid adding the same image twice
+      if (!collection.images.includes(image._id)) {
+        collection.images.push(image._id);
+      }
+    } else {
+      // Create new collection
+      user.collections.push({
+        name,
+        description,
+        images: [image._id],
+      });
+    }
+
+    // 4. Save the updated user
+    await user.save();
+
+    res.status(200).json({ message: "Image added to collection successfully" });
+  } catch (error) {
+    console.error("Error adding to collection:", error);
+    res.status(500).json({ error: "Failed to add image to collection" });
+  }
+});
+
+
+// DELETE /user/:userId/collection/:collectionId
+app.delete('/user/:userId/collection/:collectionId', async (req, res) => {
+  try {
+    const { userId, collectionId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    user.collections = user.collections.filter(
+      (collection) => collection._id.toString() !== collectionId
+    );
+
+    await user.save();
+    res.status(200).json({ message: 'Collection deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);

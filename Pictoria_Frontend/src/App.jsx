@@ -5,6 +5,8 @@ import Home3 from './components/Home3';
 import Profile from './components/Profile';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PhotopeaEditor from './components/Edit';
+import GenerateImage from './components/Generate';
 
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
          <Route path='/signup' element={<Signup />}/>
          <Route path='/home3' element={<Home3 />}/>
          <Route path="/profile" element={<Profile/>}/>
+         <Route path="/edit" element={<PhotopeaEditor/>}/>
+         <Route path="/generate" element={<GenerateImage/>}/>
        </Routes>
      </BrowserRouter>
     </>
