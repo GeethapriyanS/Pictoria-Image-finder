@@ -27,36 +27,6 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage });
-
-const HUGGING_FACE_API = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2";
-const HF_TOKEN = "Bearer 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"; // Replace with your real token
-
-app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
-
-  try {
-    const response = await axios.post(
-      HUGGING_FACE_API,
-      { inputs: prompt },
-      {
-        headers: {
-          Authorization: HF_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        responseType: 'arraybuffer'
-      }
-    );
-
-    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-    res.json({ image: `data:image/png;base64,${base64Image}` });
-
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ error: 'Image generation failed' });
-  }
-});
-
 // Upload API Route
 app.post("/upload", async (req, res) => {
   try {
