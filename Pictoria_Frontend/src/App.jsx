@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhotopeaEditor from './components/Edit';
 import GenerateImage from './components/Generate';
+import Gallery from './components/Gallery';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
          <Route path="/profile" element={<Profile/>}/>
          <Route path="/edit" element={<PhotopeaEditor/>}/>
          <Route path="/generate" element={<GenerateImage/>}/>
+         <Route path='/gallery' element={<Gallery/>}/>
        </Routes>
      </BrowserRouter>
     </>

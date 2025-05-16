@@ -159,6 +159,38 @@ const Profile = () => {
           <p>No collections yet.</p>
         );
 
+      case "About":
+        return (
+          <div className="about-section">
+            <h2>About Pictoria</h2>
+            <p>
+              <strong>Pictoria</strong> is a modern image-sharing platform where
+              users can upload, like, and organize high-quality images into
+              collections. It’s built with a focus on simplicity, creativity,
+              and user experience.
+            </p>
+            <p>
+              Users can maintain their personal galleries, explore other users'
+              images, and download images for free. Whether you're a designer,
+              photographer, or enthusiast, Pictoria helps you showcase and
+              manage your visual content effortlessly.
+            </p>
+            <h3>Features</h3>
+            <ul>
+              <li>🌄 Upload and manage your own image gallery</li>
+              <li>❤️ Like and curate your favorite images</li>
+              <li>📁 Create and manage collections</li>
+              <li>🔐 Choose public or private collections</li>
+              <li>📥 Download images directly to your device</li>
+            </ul>
+            <p>
+              Built with <strong>MERN stack</strong> (MongoDB, Express, React,
+              Node.js), and integrated with <strong>Cloudinary</strong> for
+              efficient image storage.
+            </p>
+          </div>
+        );
+
       case "Stats":
         return <p>Stats feature is coming soon!</p>;
       default:
@@ -187,17 +219,15 @@ const Profile = () => {
           </button>
         </div>
         <div className="profile-tabs">
-          {["Photos", "Illustrations", "Likes", "Collections", "Stats"].map(
-            (tab) => (
-              <button
-                key={tab}
-                className={`tab-btn ${activeTab === tab ? "active" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            )
-          )}
+          {["Photos", "Likes", "Collections", "About", "Stats"].map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
         <div className="profile-content">{renderTabContent()}</div>
       </div>
@@ -228,7 +258,7 @@ const Profile = () => {
               <label>
                 Profile Picture URL:
                 <input
-                  type="text"
+                  type="url"
                   value={editData.profilePicture}
                   onChange={(e) =>
                     setEditData({ ...editData, profilePicture: e.target.value })
