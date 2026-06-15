@@ -51,8 +51,6 @@ app.post("/upload", async (req, res) => {
   }
 });
 
-
-
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.log("MongoDB Connection Failed:", err));
@@ -171,7 +169,10 @@ app.get("/user-images", async (req, res) => {
 app.get("/user/:id", async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId)
+      .populate("collections.images")
+      .populate("likedImages")
+      .select("-password");
     const images = await Image.find({ uploadedBy: userId }).sort({ createdAt: -1 });
 
     res.json({ user, images });
@@ -196,8 +197,8 @@ app.post("/user/:userId/like", async (req, res) => {
       await image.save();
     }
 
-    // Check if already liked
-    const alreadyLiked = user.likedImages.includes(image._id);
+    // Check if already liked using objectId string check
+    const alreadyLiked = user.likedImages.some((id) => id.toString() === image._id.toString());
     if (alreadyLiked) {
       return res.status(400).json({ message: "Image already liked" });
     }
@@ -255,31 +256,33 @@ app.post("/user/:userId/unlike", async (req, res) => {
 
 app.post("/user/:userId/collections", async (req, res) => {
   const { userId } = req.params;
-  const { name, description, imageUrl, title } = req.body;
+  const { name, description, imageUrl, title, isPrivate } = req.body;
 
   try {
     // 1. Check if image already exists, else create it
     let image = await Image.findOne({ imageUrl });
 
     if (!image) {
-  image = new Image({ imageUrl, title, uploadedBy: userId });
-  await image.save();
-}
-
+      image = new Image({ imageUrl, title, uploadedBy: userId });
+      await image.save();
+    }
 
     // 2. Find the user
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // 3. Check if collection with the same name already exists
-   let collection = user.collections.find(
-  (col) => col.name.toLowerCase() === name.toLowerCase()
-);
+    let collection = user.collections.find(
+      (col) => col.name.toLowerCase() === name.toLowerCase()
+    );
 
     if (collection) {
-      // Avoid adding the same image twice
-      if (!collection.images.includes(image._id)) {
+      // Avoid adding the same image twice using objectId string check
+      if (!collection.images.some((id) => id.toString() === image._id.toString())) {
         collection.images.push(image._id);
+      }
+      if (isPrivate !== undefined) {
+        collection.isPrivate = isPrivate;
       }
     } else {
       // Create new collection
@@ -287,6 +290,7 @@ app.post("/user/:userId/collections", async (req, res) => {
         name,
         description,
         images: [image._id],
+        isPrivate: isPrivate || false,
       });
     }
 
@@ -344,6 +348,124 @@ app.patch("/user/:id", async (req, res) => {
   }
 });
 
+// PATCH /user/:userId/collection/:collectionId - Update Collection Privacy/Details
+app.patch("/user/:userId/collection/:collectionId", async (req, res) => {
+  try {
+    const { userId, collectionId } = req.params;
+    const { isPrivate, name, description } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const collection = user.collections.id(collectionId);
+    if (!collection) return res.status(404).json({ error: "Collection not found" });
+
+    if (isPrivate !== undefined) collection.isPrivate = isPrivate;
+    if (name !== undefined) collection.name = name;
+    if (description !== undefined) collection.description = description;
+
+    await user.save();
+    res.json({ success: true, message: "Collection updated successfully", collection });
+  } catch (error) {
+    console.error("Error updating collection:", error);
+    res.status(500).json({ error: "Failed to update collection" });
+  }
+});
+
+// POST /generate - AI Image Generation Route
+app.post("/generate", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required" });
+  }
+
+  try {
+    console.log(" Generating AI image for prompt:", prompt);
+    // Pollinations AI is used to provide keyless, high quality image generation
+    const encodedPrompt = encodeURIComponent(prompt);
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${Date.now()}`;
+
+    // Download generated image buffer
+    const imageResponse = await axios.get(pollinationsUrl, { responseType: "arraybuffer" });
+    const buffer = Buffer.from(imageResponse.data, "binary");
+
+    // Upload the buffer to Cloudinary so it is persistent and stable
+    const uploadPromise = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "generated_images", format: "jpeg" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(buffer);
+    });
+
+    const cloudinaryResult = await uploadPromise;
+    console.log("✅ Generated image saved to Cloudinary:", cloudinaryResult.secure_url);
+    res.json({ success: true, image: cloudinaryResult.secure_url });
+  } catch (error) {
+    console.error("❌ Image generation failed:", error);
+    res.status(500).json({ error: "Failed to generate image" });
+  }
+});
+
+// GET /shared-collection/:collectionId - Public sharing endpoint
+app.get("/shared-collection/:collectionId", async (req, res) => {
+  try {
+    const { collectionId } = req.params;
+
+    // Find user who owns the collection
+    const user = await User.findOne({ "collections._id": collectionId })
+      .populate("collections.images")
+      .select("username profilePicture collections");
+
+    if (!user) {
+      return res.status(404).json({ error: "Collection not found" });
+    }
+
+    const collection = user.collections.id(collectionId);
+    if (!collection) {
+      return res.status(404).json({ error: "Collection not found" });
+    }
+
+    // Check privacy authorization
+    if (collection.isPrivate) {
+      let token = req.headers.authorization;
+      let isOwner = false;
+      if (token) {
+        try {
+          if (token.startsWith("Bearer ")) {
+            token = token.split(" ")[1];
+          }
+          const decoded = jwt.verify(token, JWT_SECRET);
+          if (decoded.id === user._id.toString()) {
+            isOwner = true;
+          }
+        } catch (err) {
+          // invalid token
+        }
+      }
+
+      if (!isOwner) {
+        return res.status(403).json({ error: "This collection is private" });
+      }
+    }
+
+    res.json({
+      success: true,
+      owner: {
+        username: user.username,
+        profilePicture: user.profilePicture,
+        _id: user._id,
+      },
+      collection,
+    });
+  } catch (error) {
+    console.error("Error fetching shared collection:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server running on http://localhost:${process.env.PORT}`);

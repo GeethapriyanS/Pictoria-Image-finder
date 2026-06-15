@@ -51,12 +51,39 @@ const UploadModal = ({ close }) => {
     <div className="upload-modal">
       <div className="modal-content">
         <h2>Upload Image</h2>
-        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
-        <button onClick={handleImageUpload} disabled={uploading}>
-          {uploading ? "Uploading..." : "Upload"}
-        </button>
-        <button onClick={close}>Cancel</button>
+        
+        <div className="upload-form-group">
+          <label>Title</label>
+          <input 
+            type="text" 
+            placeholder="Give your artwork a title..." 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+          />
+        </div>
+
+        <div className="upload-form-group">
+          <label>Select Image File</label>
+          <label className="file-input-container">
+            <span className="file-icon">📁</span>
+            <span className="file-upload-text">
+              {image ? image.name : "Click to select or drag & drop image"}
+            </span>
+            <span className="file-upload-subtext">Supports PNG, JPG, JPEG, WEBP</span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={(e) => setImage(e.target.files[0])} 
+            />
+          </label>
+        </div>
+
+        <div className="upload-buttons">
+          <button className="upload-btn" onClick={handleImageUpload} disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+          <button className="cancel-btn" onClick={close}>Cancel</button>
+        </div>
       </div>
     </div>
   );

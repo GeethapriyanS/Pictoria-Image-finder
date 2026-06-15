@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const collectionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: String,
-  images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }]
+  images: [{ type: mongoose.Schema.Types.ObjectId, ref: "Image" }],
+  isPrivate: { type: Boolean, default: false }
 });
 
 const userSchema = new mongoose.Schema({

@@ -8,7 +8,7 @@ import UploadModal from "./uploadmodel.jsx";
 import like from "../images/like.png";
 import download from "../images/download.png";
 import Navbar from "./Navbar.jsx";
-import { FaHeart, FaDownload, FaPlus } from "react-icons/fa";
+import { FaHeart, FaDownload, FaPlus, FaEdit } from "react-icons/fa";
 
 const Home3 = () => {
   const [likedImageUrls, setLikedImageUrls] = useState([]);
@@ -19,15 +19,16 @@ const Home3 = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [collectionName, setCollectionName] = useState("");
   const [collectionDesc, setCollectionDesc] = useState("");
+  const [selectedDetailImage, setSelectedDetailImage] = useState(null);
 
   const navigate = useNavigate();
 
   const [trendingSearches] = useState([
+    "Uploaded Images",
     "Sports",
     "Travel",
     "Art",
@@ -63,45 +64,7 @@ const Home3 = () => {
   }, []);
 
   useEffect(() => {
-    const fetchTrendingImages = async () => {
-      try {
-        setLoading(true);
-
-        const trendingSearches = [
-          "Animals",
-          "Nature",
-          "Travel",
-          "Sports",
-          "Art",
-          "Finance",
-          "Technology",
-          "Cars",
-        ];
-
-        const allResults = await Promise.all(
-          trendingSearches.map(async (query) => {
-            const response = await axios.get(`http://localhost:5000/search`, {
-              params: { query, per_page: 4 },
-            });
-            return response.data.results.map((img) => ({
-              id: img.id,
-              imageUrl: img.urls.small,
-              title: img.alt_description || "Untitled",
-              isUserUpload: false,
-            }));
-          })
-        );
-
-        const mergedImages = allResults.flat();
-        setImages(mergedImages);
-      } catch (error) {
-        console.error("Error fetching trending images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTrendingImages();
+    fetchImages("Featured", 1);
   }, []);
 
   const fetchImages = async (query, newPage = 1) => {
@@ -109,23 +72,42 @@ const Home3 = () => {
       setLoading(true);
       setLastQuery(query);
 
-      let unsplashImages = [];
-      if (query) {
-        const response = await axios.get(`http://localhost:5000/search`, {
-          params: { query, per_page: 28, page: newPage },
-        });
-
-        unsplashImages = response.data.results.map((img) => ({
-          id: img.id,
-          imageUrl: img.urls.small,
-          title: img.alt_description || "Untitled",
-          isUserUpload: false,
+      if (query === "Uploaded Images") {
+        const res = await axios.get("http://localhost:5000/user-images");
+        const allUploaded = (res.data.images || []).map((img) => ({
+          id: img._id,
+          imageUrl: img.imageUrl,
+          title: img.title || "Untitled",
+          isUserUpload: true,
         }));
-      }
 
-      setImages(unsplashImages);
-      setPage(newPage);
-      setHasMore(unsplashImages.length === 28);
+        const perPage = 28;
+        const startIndex = (newPage - 1) * perPage;
+        const endIndex = startIndex + perPage;
+        const pageImages = allUploaded.slice(startIndex, endIndex);
+
+        setImages(pageImages);
+        setPage(newPage);
+        setHasMore(endIndex < allUploaded.length);
+      } else {
+        let unsplashImages = [];
+        if (query) {
+          const response = await axios.get(`http://localhost:5000/search`, {
+            params: { query, per_page: 28, page: newPage },
+          });
+
+          unsplashImages = response.data.results.map((img) => ({
+            id: img.id,
+            imageUrl: img.urls.small,
+            title: img.alt_description || "Untitled",
+            isUserUpload: false,
+          }));
+        }
+
+        setImages(unsplashImages);
+        setPage(newPage);
+        setHasMore(unsplashImages.length === 28);
+      }
     } catch (error) {
       console.error("Error fetching images:", error);
     } finally {
@@ -133,28 +115,9 @@ const Home3 = () => {
     }
   };
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (searchTerm) {
-      try {
-        setLoading(true);
-        setLastQuery(searchTerm);
-        const response = await axios.get(`http://localhost:5000/search`, {
-          params: { query: searchTerm },
-        });
-
-        const formattedImages = response.data.results.map((img) => ({
-          id: img.id,
-          imageUrl: img.urls.small,
-          title: img.alt_description || "Untitled",
-          isUserUpload: false,
-        }));
-
-        setImages(formattedImages);
-      } catch (error) {
-        console.error("Error searching images:", error);
-      } finally {
-        setLoading(false);
-      }
+      fetchImages(searchTerm, 1);
     }
   };
 
@@ -171,6 +134,23 @@ const Home3 = () => {
   const handlePrevPage = () => {
     if (page > 1) {
       fetchImages(lastQuery, page - 1);
+    }
+  };
+
+  const downloadImage = async (url, title = "download") => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${title.replace(/\s+/g, "_")}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      window.open(url, "_blank");
     }
   };
 
@@ -248,14 +228,23 @@ const Home3 = () => {
 
   return (
     <>
-      <Navbar setShowUpload={setShowUpload} />
+      <Navbar />
       <div className="container">
         <header className="homepage-header">
           <h1 className="homepage-title">
             Discover the best content on Pictoria
           </h1>
-          <p className="homepage-description">Choose your interests</p>
+          <p className="homepage-description">Your all-in-one visual exploration & creation workspace</p>
         </header>
+
+        <div className="hero-banner glass glow">
+          <h2>Create, Edit, and Curate</h2>
+          <p>
+            Welcome to Pictoria, a modern MERN platform built for designers and creators.
+            Explore stock imagery, generate original artwork with our AI engine, refine assets inside
+            our embedded Photopea editor, and curate shared collections with clients or collaborators.
+          </p>
+        </div>
 
         <div className="trending-tags">
           {trendingSearches.map((item, index) => (
@@ -288,33 +277,23 @@ const Home3 = () => {
           <>
             <div className="image-grid">
               {images.map((image, index) => (
-                <div className="image-card" key={image.id}>
-                  <img src={image.imageUrl} alt={image.title} />
+                <div 
+                  className="image-card" 
+                  key={image.id || index}
+                  onClick={() => setSelectedDetailImage(image)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img 
+                    src={image.imageUrl} 
+                    alt={image.title} 
+                  />
 
                   <div className="image-overlay">
-                    <button
-                      className="icon-btn"
-                      onClick={() => handleLike(image)}
-                    >
-                      <FaHeart
-                        size={16}
-                        color={
-                          likedImageUrls.includes(image.imageUrl)
-                            ? "red"
-                            : "lightgray"
-                        }
-                      />
-                    </button>
+                    {/* Nice dark hover overlay overlaying the card */}
+                  </div>
 
-                    <a className="icon-btn" href={image.imageUrl} download>
-                      <FaDownload size={16} color={"lightgray"} />
-                    </a>
-                    <button
-                      className="icon-btn"
-                      onClick={() => openAddToCollection(image)}
-                    >
-                      <FaPlus size={16} color={"lightgray"} />
-                    </button>
+                  <div className="image-card-footer">
+                    <span className="image-title">{image.title || "Untitled Artwork"}</span>
                   </div>
                 </div>
               ))}
@@ -332,7 +311,7 @@ const Home3 = () => {
           </>
         )}
 
-        {showUpload && <UploadModal close={() => setShowUpload(false)} />}
+
 
         {showCollectionModal && (
           <div className="collection-modal">
@@ -364,6 +343,74 @@ const Home3 = () => {
             </div>
           </div>
         )}
+
+        {selectedDetailImage && (
+          <div className="lightbox-modal" onClick={() => setSelectedDetailImage(null)}>
+            <div className="lightbox-content glass glow" onClick={(e) => e.stopPropagation()}>
+              <button className="lightbox-close-btn" onClick={() => setSelectedDetailImage(null)}>&times;</button>
+              <div className="lightbox-body">
+                <div className="lightbox-image-container">
+                  <img src={selectedDetailImage.imageUrl} alt={selectedDetailImage.title} />
+                </div>
+                <div className="lightbox-details">
+                  <h2>{selectedDetailImage.title || "Untitled Artwork"}</h2>
+                  <p className="lightbox-desc">Explore details, perform custom designs in the image editor, download, or save this asset to one of your custom collections.</p>
+                  
+                  <div className="lightbox-actions-grid">
+                    <button className="lightbox-action-btn like" onClick={() => handleLike(selectedDetailImage)}>
+                      <FaHeart color={likedImageUrls.includes(selectedDetailImage.imageUrl) ? "#ef4444" : "#64748b"} />
+                      <span>{likedImageUrls.includes(selectedDetailImage.imageUrl) ? "Liked" : "Like"}</span>
+                    </button>
+                    
+                    <button className="lightbox-action-btn download" onClick={() => downloadImage(selectedDetailImage.imageUrl, selectedDetailImage.title)}>
+                      <FaDownload />
+                      <span>Download</span>
+                    </button>
+                    
+                    <button className="lightbox-action-btn edit" onClick={() => {
+                      setSelectedDetailImage(null);
+                      navigate("/edit", { state: { imageUrl: selectedDetailImage.imageUrl } });
+                    }}>
+                      <FaEdit />
+                      <span>Edit Asset</span>
+                    </button>
+                    
+                    <button className="lightbox-action-btn collection" onClick={() => openAddToCollection(selectedDetailImage)}>
+                      <FaPlus />
+                      <span>Add to Collection</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <section className="info-section">
+          <h2 className="info-section-title">Explore Pictoria's Core Capabilities</h2>
+          <div className="info-grid">
+            <div className="info-card glass">
+              <div className="info-icon">🔍</div>
+              <h3>Explore Visuals</h3>
+              <p>Search millions of high-resolution stock photos and curated assets sorted across categories.</p>
+            </div>
+            <div className="info-card glass">
+              <div className="info-icon">⚡</div>
+              <h3>AI Generation</h3>
+              <p>Turn descriptions into high-fidelity image designs instantly with our generative model interface.</p>
+            </div>
+            <div className="info-card glass">
+              <div className="info-icon">🎨</div>
+              <h3>Photopea Editor</h3>
+              <p>Modify and refine visual assets. Crop, add filters, or paint directly with advanced layered editing.</p>
+            </div>
+            <div className="info-card glass">
+              <div className="info-icon">🔗</div>
+              <h3>Share Collections</h3>
+              <p>Compile custom collections, control privacy visibility, and generate secure public links to share.</p>
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );

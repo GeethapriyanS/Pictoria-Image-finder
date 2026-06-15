@@ -1,68 +1,345 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --background: 224 25% 9%; /* Sleek dark night background */
+  --foreground: 210 40% 98%;
+  
+  --card: 224 22% 12%;
+  --card-foreground: 210 40% 98%;
+  --card-glass: rgba(15, 23, 42, 0.45);
+  
+  --popover: 224 20% 12%;
+  --popover-foreground: 210 40% 98%;
+  
+  --primary: 263.4 75% 60%; /* Vibrant violet-purple */
+  --primary-foreground: 210 40% 98%;
+  --primary-glow: rgba(139, 92, 246, 0.3);
+  
+  --secondary: 215 25% 20%;
+  --secondary-foreground: 210 40% 98%;
+  
+  --muted: 224 15% 16%;
+  --muted-foreground: 215 20.2% 65%;
+  
+  --accent: 263.4 75% 65%;
+  --accent-foreground: 210 40% 98%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  
+  --border: 224 20% 18%;
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --input: 224 20% 18%;
+  --ring: 263.4 75% 60%;
+  --radius: 1rem;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', 'Poppins', sans-serif;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 5px;
+  border: 2px solid hsl(var(--background));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+a {
+  color: hsl(var(--accent));
+  text-decoration: none;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: opacity 0.2s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+a:hover {
+  opacity: 0.9;
+}
+
+/* Global button styles to respect theme */
+button {
+  font-family: inherit;
+}
+
+/* Glassmorphism helpers */
+.glass {
+  background: var(--card-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+}
+
+.glow {
+  box-shadow: 0 0 25px var(--primary-glow);
+}
+
+/* Shared Responsive Image Grid */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 20px 0;
+}
+
+/* Image Card & Overlays */
+.image-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  aspect-ratio: 4 / 3;
+}
+
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.image-card:hover img {
+  transform: scale(1.06);
+}
+
+/* Overlay visible on hover */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.2) 60%, rgba(15, 23, 42, 0.4) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(2px);
+  padding: 20px;
+}
+
+.image-card:hover .image-overlay {
+  opacity: 1;
+}
+
+.image-card-footer {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  pointer-events: none;
+  z-index: 5;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.image-card:hover .image-card-footer {
+  transform: translateY(-5px);
+}
+
+.image-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Upload Modal Styles */
+.upload-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.upload-modal .modal-content {
+  background-color: hsl(var(--card));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 35px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.upload-modal h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.upload-modal .upload-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upload-modal label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.upload-modal input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.upload-modal input[type="text"]:focus {
+  border-color: hsl(var(--primary));
+}
+
+/* Custom File Upload Styling */
+.upload-modal .file-input-container {
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-modal .file-input-container:hover {
+  border-color: hsl(var(--primary));
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.upload-modal .file-input-container input[type="file"] {
+  display: none;
+}
+
+.upload-modal .file-icon {
+  font-size: 32px;
+  color: #a78bfa;
+}
+
+.upload-modal .file-upload-text {
+  font-size: 14px;
+  color: #cbd5e1;
+  word-break: break-all;
+}
+
+.upload-modal .file-upload-subtext {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.upload-modal .upload-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.upload-modal .upload-buttons button {
+  padding: 11px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-modal .upload-btn {
+  background-color: hsl(var(--primary));
+  color: white;
+  border: none;
+}
+
+.upload-modal .upload-btn:hover:not(:disabled) {
+  background-color: hsl(var(--accent));
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+}
+
+.upload-modal .upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.upload-modal .cancel-btn {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.upload-modal .cancel-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Global Grid Layout Responsiveness */
+@media (max-width: 768px) {
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 10px 0;
   }
 }
+
+@media (max-width: 480px) {
+  .image-grid {
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 12px;
+  }
+  .image-title {
+    font-size: 12px;
+  }
+}
+
