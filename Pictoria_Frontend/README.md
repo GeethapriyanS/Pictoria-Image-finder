@@ -1,8 +1,82 @@
-# React + Vite
+# Pictoria Frontend - React + Vite Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the user interface for **Pictoria**, built as a responsive Single Page Application (SPA) using React 18, Vite, and custom CSS stylesheets.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key Features
+
+- **Responsive Navigation**: Adaptive header that collapses text labels into sleek, mobile-friendly icons on narrow viewports.
+- **Stock & User Photo Search**: Merged client searching supporting both Unsplash stock search and user-uploaded assets under the "Uploaded Images" category.
+- **Interactive Lightbox**: Detailed pop-up details modal showing image titles and details alongside modular, aligned action handlers (Like, Download, Edit Asset, Add to Collection).
+- **Layered Photo Editing**: Embedded, seamless **Photopea** layered image editor inside an iframe to perform custom crops, overlays, and color grading.
+- **AI Asset Generation**: Image creation interface triggering keyless prompts and persisting creations with safe hosting.
+- **Client Curation**: Interface for user collections, allowing quick public/private updates, collection sharing, and profile replication copies.
+
+---
+
+## File Structure
+
+```
+Pictoria_Frontend/
+├── public/                 # Static public assets
+├── src/
+│   ├── assets/             # Images and design resources
+│   ├── components/         # React pages & components
+│   │   ├── Edit.jsx        # Photopea editor workspace page
+│   │   ├── Gallery.jsx     # Collections overview page
+│   │   ├── Generate.jsx    # AI Image prompt generator page
+│   │   ├── Home3.jsx       # Landing homepage, grid, search & lightbox popup
+│   │   ├── Login.jsx       # Login form component
+│   │   ├── Navbar.jsx      # Sticky responsive navbar component
+│   │   ├── Profile.jsx     # User dashboard (Photos, Likes, Collections)
+│   │   ├── SharedCollection.jsx # Shared collection display layout
+│   │   ├── Signup.jsx      # Signup form component
+│   │   └── uploadmodel.jsx # Custom dashed drag-and-drop Upload Modal
+│   ├── css/                # Custom CSS styling files
+│   │   ├── GenerateImage.css
+│   │   ├── Home3.css
+│   │   ├── Login.css
+│   │   ├── Navbar.css
+│   │   ├── Profile.css
+│   │   └── signup.css
+│   ├── App.jsx             # React router configuration and main container
+│   ├── index.css           # Global typography, color tokens, grids, modals, and responsive states
+│   └── main.jsx            # DOM render entrypoint
+├── index.html              # HTML structure template
+├── package.json            # Client dependencies and npm scripts
+└── README.md               # This file
+```
+
+---
+
+## Setup & Installation
+
+1. **Navigate to the Frontend Directory**:
+   ```bash
+   cd Pictoria_Frontend
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Verify API Configuration**:
+   Ensure that your local backend server is running on [http://localhost:5000](http://localhost:5000) (or update the endpoints inside the components to match your staging environment).
+
+4. **Start the Development Server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+5. **Build for Production**:
+   To bundle the assets into the production-ready `dist/` folder:
+   ```bash
+   npm run build
+   ```
+   To verify the built artifacts locally:
+   ```bash
+   npm run preview
+   ```

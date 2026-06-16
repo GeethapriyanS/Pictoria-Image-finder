@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/Navbar.css";
 import { FaEdit, FaUpload, FaUser, FaSignOutAlt, FaMagic, FaImages } from "react-icons/fa"; // Import icons
-import logo from "../images/logo.png"; // Import the logo
+import logo from "/public/pictoria_logo.png";
 import UploadModal from "./uploadmodel.jsx";
 
 const Navbar = () => {
