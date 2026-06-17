@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaDownload, FaEdit, FaPlus, FaHeart, FaUser, FaFolderPlus } from "react-icons/fa";
 import Navbar from "./Navbar";
+import API_BASE_URL from "../config";
 import "../css/Profile.css"; // Reuse card and modal styling
 
 const SharedCollection = () => {
@@ -33,7 +34,7 @@ const SharedCollection = () => {
           headers["Authorization"] = `Bearer ${token}`;
         }
         
-        const res = await axios.get(`http://localhost:5000/shared-collection/${collectionId}`, { headers });
+        const res = await axios.get(`${API_BASE_URL}/shared-collection/${collectionId}`, { headers });
         if (res.data.success) {
           setCollection(res.data.collection);
           setOwner(res.data.owner);
@@ -62,7 +63,7 @@ const SharedCollection = () => {
     const fetchCurrentUserLikes = async () => {
       if (!currentUserId) return;
       try {
-        const res = await axios.get(`http://localhost:5000/user/${currentUserId}`);
+        const res = await axios.get(`${API_BASE_URL}/user/${currentUserId}`);
         const likedImageObjects = res.data.user?.likedImages || [];
         setLikedImageUrls(likedImageObjects.map(img => img.imageUrl));
       } catch (err) {
@@ -103,12 +104,12 @@ const SharedCollection = () => {
     }
     try {
       if (likedImageUrls.includes(image.imageUrl)) {
-        await axios.post(`http://localhost:5000/user/${currentUserId}/unlike`, {
+        await axios.post(`${API_BASE_URL}/user/${currentUserId}/unlike`, {
           imageId: image._id,
         });
         setLikedImageUrls(prev => prev.filter(url => url !== image.imageUrl));
       } else {
-        await axios.post(`http://localhost:5000/user/${currentUserId}/like`, {
+        await axios.post(`${API_BASE_URL}/user/${currentUserId}/like`, {
           imageUrl: image.imageUrl,
           title: image.title,
         });
@@ -132,7 +133,7 @@ const SharedCollection = () => {
   const saveToMyCollection = async () => {
     if (!selectedImage) return;
     try {
-      await axios.post(`http://localhost:5000/user/${currentUserId}/collections`, {
+      await axios.post(`${API_BASE_URL}/user/${currentUserId}/collections`, {
         name: targetCollectionName,
         description: targetCollectionDesc,
         imageUrl: selectedImage.imageUrl,
@@ -164,7 +165,7 @@ const SharedCollection = () => {
 
       // Sequentially add images
       for (const img of collection.images) {
-        await axios.post(`http://localhost:5000/user/${currentUserId}/collections`, {
+        await axios.post(`${API_BASE_URL}/user/${currentUserId}/collections`, {
           name: collectionName,
           description: `Imported from ${owner.username}'s collection.`,
           imageUrl: img.imageUrl,

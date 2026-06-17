@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/Home3.css";
+import API_BASE_URL from "../config";
 import logo from "../images/logo.png";
 import searchIcon from "../images/search.png";
 import UploadModal from "./uploadmodel.jsx";
@@ -44,7 +45,7 @@ const Home3 = () => {
       if (!userId) return;
 
       try {
-        const res = await axios.get(`http://localhost:5000/user/${userId}`);
+        const res = await axios.get(`${API_BASE_URL}/user/${userId}`);
 
         const likedImageObjects = res.data.images || [];
         const likedUrls = likedImageObjects.map((img) => img.imageUrl);
@@ -73,7 +74,7 @@ const Home3 = () => {
       setLastQuery(query);
 
       if (query === "Uploaded Images") {
-        const res = await axios.get("http://localhost:5000/user-images");
+        const res = await axios.get(`${API_BASE_URL}/user-images`);
         const allUploaded = (res.data.images || []).map((img) => ({
           id: img._id,
           imageUrl: img.imageUrl,
@@ -92,7 +93,7 @@ const Home3 = () => {
       } else {
         let unsplashImages = [];
         if (query) {
-          const response = await axios.get(`http://localhost:5000/search`, {
+          const response = await axios.get(`${API_BASE_URL}/search`, {
             params: { query, per_page: 28, page: newPage },
           });
 
@@ -167,7 +168,7 @@ const Home3 = () => {
 
       if (likedImageUrls.includes(image.imageUrl)) {
         // Already liked — now unlike
-        await axios.post(`http://localhost:5000/user/${userId}/unlike`, {
+        await axios.post(`${API_BASE_URL}/user/${userId}/unlike`, {
           imageUrl: image.imageUrl,
         });
         setLikedImageUrls((prev) =>
@@ -176,7 +177,7 @@ const Home3 = () => {
         alert("Image unliked!");
       } else {
         // Like the image
-        await axios.post(`http://localhost:5000/user/${userId}/like`, {
+        await axios.post(`${API_BASE_URL}/user/${userId}/like`, {
           imageUrl: image.imageUrl,
           title: image.title,
         });
@@ -198,7 +199,7 @@ const Home3 = () => {
   const handleAddToCollection = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      await axios.post(`http://localhost:5000/user/${userId}/collections`, {
+      await axios.post(`${API_BASE_URL}/user/${userId}/collections`, {
         name: collectionName,
         description: collectionDesc,
         imageUrl: selectedImage.imageUrl,

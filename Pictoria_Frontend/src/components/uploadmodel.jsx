@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
 const UploadModal = ({ close }) => {
   const [image, setImage] = useState(null);
@@ -32,7 +33,7 @@ const UploadModal = ({ close }) => {
         uploadedBy: userId,
       };
   
-      const response = await axios.post("http://localhost:5000/upload", formData, {
+      const response = await axios.post(`${API_BASE_URL}/upload`, formData, {
         headers: { "Content-Type": "application/json" }, 
       });
   

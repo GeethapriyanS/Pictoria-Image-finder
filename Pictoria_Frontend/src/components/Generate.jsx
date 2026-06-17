@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import "../css/GenerateImage.css"
+import API_BASE_URL from "../config";
 
 const GenerateImage = () => {
   const [prompt, setPrompt] = useState("");
@@ -16,7 +17,7 @@ const GenerateImage = () => {
     setImage(null);
 
     try {
-      const res = await axios.post("http://localhost:5000/generate", { prompt });
+      const res = await axios.post(`${API_BASE_URL}/generate`, { prompt });
       setImage(res.data.image);
       setHistory((prev) => [prompt, ...prev.slice(0, 4)]);
     } catch (err) {

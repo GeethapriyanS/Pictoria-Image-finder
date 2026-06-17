@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 export default function PhotopeaEditor() {
   const location = useLocation();
@@ -20,7 +21,7 @@ export default function PhotopeaEditor() {
     
     const fetchUserImages = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/user/${userId}`);
+        const res = await axios.get(`${API_BASE_URL}/user/${userId}`);
         setUserImages(res.data.images || []);
       } catch (err) {
         console.error("Failed to fetch user images", err);

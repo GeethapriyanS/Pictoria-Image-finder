@@ -92,11 +92,19 @@ Follow these sequential steps to run both the frontend and backend servers concu
    ```bash
    npm install
    ```
-3. Start the Vite development server:
+3. Create a `.env` file in the `Pictoria_Frontend` directory and set the backend base URL (refer to `.env.example`):
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000
+   ```
+   To connect to the production environment, set it to:
+   ```env
+   VITE_API_BASE_URL=https://pictoria-image-finder1.onrender.com
+   ```
+4. Start the Vite development server:
    ```bash
    npm run dev
    ```
-4. Open the development workspace link:
+5. Open the development workspace link:
    [http://localhost:5173](http://localhost:5173)
 
 ---

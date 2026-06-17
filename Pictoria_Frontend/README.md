@@ -62,8 +62,15 @@ Pictoria_Frontend/
    npm install
    ```
 
-3. **Verify API Configuration**:
-   Ensure that your local backend server is running on [http://localhost:5000](http://localhost:5000) (or update the endpoints inside the components to match your staging environment).
+3. **Configure Environment Variables**:
+   Create a `.env` file in this directory (refer to `.env.example`) and set your backend API base URL:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000
+   ```
+   For connecting to the live hosted backend on Render, use:
+   ```env
+   VITE_API_BASE_URL=https://pictoria-image-finder1.onrender.com
+   ```
 
 4. **Start the Development Server**:
    ```bash

@@ -74,7 +74,9 @@ Backend/
      ```bash
      npm start
      ```
-   The backend server runs by default on [http://localhost:5000](http://localhost:5000).
+    The backend server runs by default on [http://localhost:5000](http://localhost:5000).
+    
+    *Note: The production API server is deployed on Render at `https://pictoria-image-finder1.onrender.com`.*
 
 ---
 

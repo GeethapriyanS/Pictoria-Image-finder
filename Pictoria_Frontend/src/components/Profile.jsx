@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/Profile.css";
+import API_BASE_URL from "../config";
 import defaultProfile from "../images/default profile.jpg";
 import Navbar from "./Navbar";
 import { FaLock, FaUnlock, FaShareAlt, FaEdit, FaUser, FaHeart, FaDownload, FaPlus } from "react-icons/fa";
@@ -39,7 +40,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const res = await axios.patch(
-        `http://localhost:5000/user/${userId}`,
+        `${API_BASE_URL}/user/${userId}`,
         editData
       );
       setUserInfo(res.data);
@@ -57,7 +58,7 @@ const Profile = () => {
 
     const fetchProfileData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/user/${userId}`);
+        const res = await axios.get(`${API_BASE_URL}/user/${userId}`);
         const { user, images = [] } = res.data;
 
         setUserInfo(user || {});
@@ -78,7 +79,7 @@ const Profile = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/user/${userId}/collection/${collectionId}`
+        `${API_BASE_URL}/user/${userId}/collection/${collectionId}`
       );
       // Remove from state
       setCollections((prev) =>
@@ -92,7 +93,7 @@ const Profile = () => {
 
   const handleTogglePrivacy = async (collectionId, currentIsPrivate) => {
     try {
-      await axios.patch(`http://localhost:5000/user/${userId}/collection/${collectionId}`, {
+      await axios.patch(`${API_BASE_URL}/user/${userId}/collection/${collectionId}`, {
         isPrivate: !currentIsPrivate
       });
       setCollections(prev => prev.map(col => {
@@ -141,17 +142,17 @@ const Profile = () => {
       if (isLiked) {
         const targetImg = likedImages.find((img) => img.imageUrl === image.imageUrl);
         if (!targetImg) return;
-        await axios.post(`http://localhost:5000/user/${userId}/unlike`, {
+        await axios.post(`${API_BASE_URL}/user/${userId}/unlike`, {
           imageId: targetImg._id,
         });
         setLikedImages((prev) => prev.filter((img) => img.imageUrl !== image.imageUrl));
         alert("Image unliked!");
       } else {
-        await axios.post(`http://localhost:5000/user/${userId}/like`, {
+        await axios.post(`${API_BASE_URL}/user/${userId}/like`, {
           imageUrl: image.imageUrl,
           title: image.title,
         });
-        const res = await axios.get(`http://localhost:5000/user/${userId}`);
+        const res = await axios.get(`${API_BASE_URL}/user/${userId}`);
         setLikedImages(res.data.user?.likedImages || []);
         alert("Image liked!");
       }
@@ -167,7 +168,7 @@ const Profile = () => {
 
   const handleAddToCollection = async () => {
     try {
-      await axios.post(`http://localhost:5000/user/${userId}/collections`, {
+      await axios.post(`${API_BASE_URL}/user/${userId}/collections`, {
         name: collectionName,
         description: collectionDesc,
         imageUrl: selectedImage.imageUrl,
@@ -178,7 +179,7 @@ const Profile = () => {
       setShowCollectionModal(false);
       setCollectionName("");
       setCollectionDesc("");
-      const res = await axios.get(`http://localhost:5000/user/${userId}`);
+      const res = await axios.get(`${API_BASE_URL}/user/${userId}`);
       setCollections(res.data.user?.collections || []);
     } catch (error) {
       console.error("Error adding to collection:", error);
