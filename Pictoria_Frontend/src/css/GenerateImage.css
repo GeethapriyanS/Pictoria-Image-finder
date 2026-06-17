@@ -153,6 +153,30 @@
   border-color: rgba(139, 92, 246, 0.3);
 }
 
+.download-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.download-btn:hover {
+  background-color: hsl(var(--primary));
+  color: #ffffff;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+
 /* AI Generator Responsiveness */
 @media (max-width: 768px) {
   .image-generator-container {

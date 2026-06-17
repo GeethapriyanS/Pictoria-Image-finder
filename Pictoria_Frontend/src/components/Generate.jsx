@@ -71,7 +71,7 @@ const GenerateImage = () => {
         </div>
 
         {image && (
-          <div className="mt-6 flex flex-col items-center gap-4">
+          <div className="image-preview-container">
             <img src={image} alt="Generated" className="image-preview" />
             <button onClick={downloadImage} className="download-btn">
               Download Image

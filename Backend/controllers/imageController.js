@@ -121,15 +121,17 @@ const generateAIImage = async (req, res) => {
           console.log(`🔄 Attempting Pollinations AI image generation... (Retries left: ${retries})`);
           const imageResponse = await axios.get(pollinationsUrl, { 
             responseType: "arraybuffer",
-            timeout: 15000 // 15s timeout
+            timeout: 60000 // 60s timeout
           });
           buffer = Buffer.from(imageResponse.data, "binary");
           break; // success
         } catch (err) {
           retries--;
+          const isTimeout = err.code === 'ECONNABORTED';
           const is402 = err.response && err.response.status === 402;
-          if (is402 && retries > 0) {
-            console.warn(`⚠️ Pollinations queue full (402). Retrying in ${delay / 1000}s...`);
+          
+          if (retries > 0) {
+            console.warn(`⚠️ Pollinations AI request failed (${isTimeout ? 'Timeout' : err.message}). Retrying in ${delay / 1000}s...`);
             await new Promise(resolve => setTimeout(resolve, delay));
             delay += 1000; // increase delay for next retry
           } else {
