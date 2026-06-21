@@ -1,5 +1,7 @@
 # Pictoria - Creative Search, AI Generation & Layered Image Workspace
 
+🚀 **Live Demo:** [pictoria-image-finder.vercel.app](https://pictoria-image-finder.vercel.app)
+
 **Pictoria** is a MERN stack web application built for creators, designers, and curators. It provides an all-in-one visual workspace where users can search stock images, create artwork using a keyless AI generation engine, refine image details inside an embedded Photopea layered editor, and organize assets into public or private collections shareable via unique URLs.
 
 The codebase is structured as a decoupled workspace containing a Node.js/Express REST API backend and a Vite-bundled React frontend application.
